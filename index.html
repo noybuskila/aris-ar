@@ -31,20 +31,22 @@
       max-width: 50%;
       z-index: 2;
       pointer-events: none;
+      display: none; /* רק כשנטען נציג */
     }
 
     #start-btn {
       position: fixed;
-      bottom: 20px;
+      bottom: 8vh;
       left: 50%;
       transform: translateX(-50%);
-      padding: 12px 24px;
-      font-size: 18px;
+      padding: 14px 28px;
+      font-size: 20px;
       background: #4CAF50;
       color: white;
       border: none;
-      border-radius: 8px;
-      z-index: 3;
+      border-radius: 12px;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
   </style>
 </head>
@@ -56,19 +58,28 @@
   <script>
     const video = document.getElementById('camera');
     const startBtn = document.getElementById('start-btn');
+    const overlay = document.getElementById('plant-overlay');
 
     function startCamera() {
       navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then((stream) => {
           video.srcObject = stream;
           startBtn.style.display = 'none';
+          overlay.style.display = 'block'; // מציגים את התמונה רק אחרי שהמצלמה פועלת
         })
         .catch((err) => {
           alert('לא הצלחנו להפעיל את המצלמה: ' + err.message);
         });
     }
 
-    startBtn.addEventListener('click', startCamera);
+    startBtn.addEventListener('click', () => {
+      // רק אם התמונה נטענת – מפעילים מצלמה
+      if (overlay.complete && overlay.naturalHeight !== 0) {
+        startCamera();
+      } else {
+        alert("התמונה plant-in-pot.png לא נטענה. ודאי שהעלית אותה ל-GitHub בשם ובמיקום הנכונים.");
+      }
+    });
   </script>
 </body>
 </html>
