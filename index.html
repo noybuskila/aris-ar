@@ -39,26 +39,36 @@
 <script>
   const video = document.getElementById('camera');
 
+  function stopCamera() {
+    if (video.srcObject) {
+      video.srcObject.getTracks().forEach(track => track.stop());
+      video.srcObject = null;
+    }
+  }
+
   function startCamera() {
+    stopCamera(); // קודם עוצרים כל זרם קודם
+
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
       .then((stream) => {
         video.srcObject = stream;
       })
       .catch((err) => {
-        alert('המצלמה לא זמינה: ' + err);
+        alert('לא הצלחנו לגשת למצלמה: ' + err.message);
       });
   }
 
-  // להפעיל מצלמה כשעמוד נטען
+  // הפעלת מצלמה כשהעמוד עולה
   window.addEventListener('load', startCamera);
 
-  // לוודא שהיא מופעלת גם כשחוזרים לטאב
+  // הפעלת מצלמה מחדש אם חזרנו לטאב
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
       startCamera();
     }
   });
 </script>
+
 
 </body>
 </html>
