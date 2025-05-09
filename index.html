@@ -36,9 +36,10 @@
   <video id="camera" autoplay playsinline></video>
   <img id="plant-overlay" src="plant-in-pot.png" alt="צמח לדוגמה" />
 
-  <script>
-    const video = document.getElementById('camera');
+<script>
+  const video = document.getElementById('camera');
 
+  function startCamera() {
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
       .then((stream) => {
         video.srcObject = stream;
@@ -46,6 +47,18 @@
       .catch((err) => {
         alert('המצלמה לא זמינה: ' + err);
       });
-  </script>
+  }
+
+  // להפעיל מצלמה כשעמוד נטען
+  window.addEventListener('load', startCamera);
+
+  // לוודא שהיא מופעלת גם כשחוזרים לטאב
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      startCamera();
+    }
+  });
+</script>
+
 </body>
 </html>
