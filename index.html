@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>ARis הדמיית צמח בבית</title>
+  <title>ARis - הדמיה</title>
   <style>
     body, html {
       margin: 0;
       padding: 0;
       overflow: hidden;
       position: relative;
+      font-family: sans-serif;
+      background: #000;
     }
 
     video {
@@ -30,45 +32,43 @@
       z-index: 2;
       pointer-events: none;
     }
+
+    #start-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      font-size: 18px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      z-index: 3;
+    }
   </style>
 </head>
 <body>
   <video id="camera" autoplay playsinline></video>
   <img id="plant-overlay" src="plant-in-pot.png" alt="צמח לדוגמה" />
+  <button id="start-btn">הפעל מצלמה</button>
 
-<script>
-  const video = document.getElementById('camera');
+  <script>
+    const video = document.getElementById('camera');
+    const startBtn = document.getElementById('start-btn');
 
-  function stopCamera() {
-    if (video.srcObject) {
-      video.srcObject.getTracks().forEach(track => track.stop());
-      video.srcObject = null;
+    function startCamera() {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then((stream) => {
+          video.srcObject = stream;
+          startBtn.style.display = 'none';
+        })
+        .catch((err) => {
+          alert('לא הצלחנו להפעיל את המצלמה: ' + err.message);
+        });
     }
-  }
 
-  function startCamera() {
-    stopCamera(); // קודם עוצרים כל זרם קודם
-
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-      .then((stream) => {
-        video.srcObject = stream;
-      })
-      .catch((err) => {
-        alert('לא הצלחנו לגשת למצלמה: ' + err.message);
-      });
-  }
-
-  // הפעלת מצלמה כשהעמוד עולה
-  window.addEventListener('load', startCamera);
-
-  // הפעלת מצלמה מחדש אם חזרנו לטאב
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      startCamera();
-    }
-  });
-</script>
-
-
+    startBtn.addEventListener('click', startCamera);
+  </script>
 </body>
 </html>
