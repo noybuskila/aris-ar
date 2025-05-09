@@ -1,25 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>ARis - בלי מרקר</title>
-    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aframe-ar@1.8.2/dist/aframe-ar.min.js"></script>
-    <style>
-      body { margin: 0; overflow: hidden; }
-    </style>
-  </head>
-  <body>
-    <a-scene
-      vr-mode-ui="enabled: false"
-      embedded
-      arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;">
+<head>
+  <meta charset="UTF-8" />
+  <title>ARis הדמיית צמח בבית</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+    }
 
-      <!-- קובייה שמופיעה מול המשתמש -->
-      <a-box position="0 0 -2" color="#4CAF50" depth="0.5" height="0.5" width="0.5"></a-box>
+    video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: 1;
+    }
 
-      <a-entity camera></a-entity>
-    </a-scene>
-  </body>
+    #plant-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 50%;
+      z-index: 2;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <video id="camera" autoplay playsinline></video>
+  <img id="plant-overlay" src="plant-in-pot.png" alt="צמח לדוגמה" />
+
+  <script>
+    const video = document.getElementById('camera');
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then((stream) => {
+        video.srcObject = stream;
+      })
+      .catch((err) => {
+        alert('המצלמה לא זמינה: ' + err);
+      });
+  </script>
+</body>
 </html>
